@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coordinator Interview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f4ef; --card:#ffffff; --text:#1d2421; --muted:#5d6763; --line:#e2e0d8;
+  --accent:#0f6b5f; --accent-ink:#ffffff; --accent-soft:#e3f1ed; --warn:#9a5b00; --warn-soft:#fdf2df;
+  --danger:#b3261e; --focus:#0f6b5f55; --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121614; --card:#1b201e; --text:#e9ece9; --muted:#9aa5a0; --line:#2c3330;
+    --accent:#4fbfa8; --accent-ink:#0c1512; --accent-soft:#1e322d; --warn:#f0b357; --warn-soft:#2e2615;
+    --danger:#f2867e; --focus:#4fbfa855; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:16px/1.6 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:28px 16px 48px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:18px;flex-wrap:wrap}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:var(--shadow)}
+@media (max-width:520px){.card{padding:20px}}
+h1{font-size:26px;line-height:1.25;margin:0 0 14px;letter-spacing:-.01em}
+h2{font-size:15px;margin:22px 0 8px}
+p{margin:0 0 12px}
+.muted{color:var(--muted)}
+ul.steps{margin:0 0 4px;padding:0;list-style:none}
+ul.steps li{position:relative;padding-left:22px;margin:6px 0}
+ul.steps li::before{content:"";position:absolute;left:4px;top:.65em;width:7px;height:7px;border-radius:2px;background:var(--accent)}
+.note{background:var(--accent-soft);border-radius:12px;padding:14px 16px;font-size:15px}
+.idcard{border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14px;margin:0 0 16px}
+.idcard b{display:block;font-size:16px}
+.banner{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;margin-bottom:14px}
+.btnrow{display:flex;gap:10px;align-items:center;margin-top:24px;flex-wrap:wrap}
+.spacer{flex:1}
+button{font:inherit;cursor:pointer;border-radius:10px;padding:11px 18px;font-weight:600;border:1px solid transparent;transition:transform .05s,background .15s,opacity .15s}
+button:active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.primary{background:var(--accent);color:var(--accent-ink)}
+.primary:disabled{opacity:.4;cursor:not-allowed}
+.ghost{background:transparent;color:var(--text);border-color:var(--line)}
+.small{padding:7px 14px;font-size:14px}
+.textbtn{background:none;border:none;color:var(--accent);padding:6px 4px;font-weight:600;font-size:14px}
+.textbtn.danger{color:var(--danger)}
+label.check{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border:1px solid var(--line);border-radius:12px;margin-top:10px;cursor:pointer}
+label.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);flex:none}
+.field{margin:0 0 14px}
+.field>span{display:block;font-size:14px;font-weight:600;margin:0 0 6px}
+.field>span em{font-style:normal;font-weight:500;color:var(--muted)}
+select{width:100%;font:inherit;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:40px}
+select:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sub-input{margin-top:8px}
+.whoami{font-size:14px;color:var(--muted);margin:0 0 6px}
+input[type=text]{width:100%;font:inherit;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.who{font-size:22px;font-weight:700;margin:4px 0 2px}
+.meta{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);font-weight:600}
+.bar{height:6px;background:var(--line);border-radius:99px;margin:10px 0 22px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.q{font-size:21px;line-height:1.4;font-weight:600;margin:0 0 12px;letter-spacing:-.005em}
+.hint{font-size:14px;color:var(--muted);border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin:0 0 16px}
+.entry{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 10px;background:var(--bg)}
+.entry-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.entry-text{white-space:pre-wrap;word-wrap:break-word;margin-top:4px}
+.editor{border:2px solid var(--accent);border-radius:14px;padding:12px;margin:0 0 10px}
+.editor-label{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;margin:0 0 8px}
+textarea{width:100%;min-height:150px;resize:vertical;font:inherit;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.tools{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.mic{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.mic svg{width:18px;height:18px}
+.mic.on{background:var(--danger);color:#fff}
+.mic.on svg{animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.status{font-size:13px;color:var(--muted);flex-basis:100%}
+.status:empty{display:none}
+.status.err,.err-msg{color:var(--danger)}
+.err-msg{font-size:14px;font-weight:600;margin-top:12px}
+.addbtn{width:100%;border:1.5px dashed var(--line);background:transparent;color:var(--accent);border-radius:12px;padding:12px}
+.addbtn:hover{border-color:var(--accent)}
+.rv-sec{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:22px 0 8px}
+.rv{border-top:1px solid var(--line);padding:12px 0}
+.rv-q{font-weight:600;font-size:15px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.rv-a{white-space:pre-wrap;color:var(--muted);font-size:15px;margin-top:4px}
+.big-done{font-size:44px;line-height:1;margin-bottom:8px}
+footer{text-align:center;font-size:12px;color:var(--muted);margin-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><span class="dot"></span><span id="brand"></span></div>
+  <div class="card" id="app"></div>
+  <footer>Your answers are saved on this device as you go.</footer>
+</div>
+
+<script>
+/* ===================== SETTINGS: edit these ===================== */
+const CONFIG = {
+  STUDENT_NAME: "D M Dhamith Gunawardhana",
+  STUDENT_ID: "COHNDDS252F-004",
+  PROGRAMME: "Higher National Diploma in Data Science",
+  // Paste your Google Apps Script web app URL here. Empty = preview mode (nothing is sent).
+  SHEET_URL: "https://script.google.com/macros/s/AKfycbxDHkkuHqEVCupHth4bjuwi2yhjkMzcJlVNhFZL8QWXW49GKjF_RtEuIzi-CLuoHNM4DA/exec",
+  SPEECH_LANG: "en-US",
+  // Faculty options shown in the dropdown.
+  FACULTIES: [
+    "Data Science",
+    "Fashion Design",
+    "Interior Architecture",
+    "Psychology",
+    "TESOL"
+  ]
+};
+/* ================================================================ */
+
+const QUESTIONS = [
+  // ---------- Part 1 ----------
+  {id:"Q1", part:1, sec:"Role and context", q:"How many batches do you coordinate right now? Are they weekday batches, weekend batches, or both?"},
+  {id:"Q2+Q3", part:1, sec:"Role and context", q:"Who prepares the timetable for your batches, and how far in advance? Please describe the steps, from the start of a new intake to the final timetable.", hint:"Who is involved at each step, and how long does it usually take?"},
+  {id:"Q5+Q6", part:1, sec:"Hall requests", q:"How do you find out which lecture hall your batches will use? Do you request a hall, or does someone else assign it?", hint:"If you request halls: how do you make the request, and what decides whether it is accepted?"},
+  {id:"Q7", part:1, sec:"Rules and limits", q:"What time slots are used for sessions (start times, session length, breaks)? Are they fixed?"},
+  {id:"Q8", part:1, sec:"Rules and limits", q:"Can one lecturer be booked for two batches at the same time? How do you make sure lecturer clashes don't happen?"},
+  {id:"Q9+Q10", part:1, sec:"Rules and limits", q:"Are batches ever combined into one hall, or split into smaller groups (for example for labs)? How is the hall chosen in those cases?"},
+  {id:"Q11", part:1, sec:"Rules and limits", q:"Do you go by the official hall capacity, or the number of students a hall can really hold? What happens when a batch is bigger than the hall?"},
+  {id:"Q12+Q13", part:1, sec:"Rules and limits", q:"Which modules or sessions need a lab instead of a normal hall? Does any session need other equipment, such as a projector, AC, a smart board or specific software?"},
+  {id:"Q14+Q16", part:1, sec:"Rules and limits", q:"Are any days, times or halls blocked (for example for events, other institutes or maintenance)? Are there halls your batches are never allowed to use?", hint:"If you know the reason, please mention it."},
+  {id:"Q17", part:1, sec:"Preferences", q:"When more than one hall is suitable, what makes one hall better than another?"},
+  {id:"Q20", part:1, sec:"Clashes", q:"When two batches need the same hall at the same time, who decides which one gets it? Is there a priority order?", hint:"For example: exams first, then labs, then final-year batches."},
+  {id:"Q21", part:1, sec:"Clashes", q:"Think about the last time there was a hall clash. How was it found, and how was it fixed?"},
+  {id:"Q27", part:1, sec:"Data and records", q:"Where is the timetable stored: Excel, a system, paper, WhatsApp, or something else?", hint:"If you could share a sample with names removed, please say so here and I will contact you."},
+  {id:"Q28+Q29", part:1, sec:"Data and records", q:"When the timetable changes, who updates it and how is the change recorded? Roughly how many changes happen per week?"},
+  {id:"Q30", part:1, sec:"Problems and needs", q:"What is the most time-consuming or frustrating part of the current process?"},
+  {id:"Q31", part:1, sec:"Problems and needs", q:"If a system suggested hall allocations automatically, what would you need to see before you trusted it?"},
+  {id:"Q32", part:1, sec:"Problems and needs", q:"What would be useful to see on a dashboard? For example free halls, hall usage or clashes."},
+  {id:"Q34", part:1, sec:"Closing", q:"Is there any rule, exception or practice about your timetable or halls that I haven't asked about, but should know?"},
+  // ---------- Part 2 ----------
+  {id:"Q4", part:2, sec:"Scheduling", q:"How is it decided when a lecture, tutorial or workshop is scheduled? What is your part in that decision?"},
+  {id:"Q15", part:2, sec:"Preferences", q:"Do your batches usually end up in the same halls? Is that because you prefer them, or because you are required to use them?", hint:"If there is a rule, is it official or just how things normally work out?"},
+  {id:"Q18", part:2, sec:"Preferences", q:"Do lecturers or students prefer certain halls or floors? Are those preferences taken into account?"},
+  {id:"Q19", part:2, sec:"Preferences", q:"Is it a problem when a batch has to move to a different hall or floor between two sessions on the same day?"},
+  {id:"Q22", part:2, sec:"Clashes and changes", q:"Has your usual hall ever been unavailable? What happened, and how was the other hall chosen?"},
+  {id:"Q23", part:2, sec:"Special cases", q:"When a lecture is cancelled, who do you inform, and how?"},
+  {id:"Q24", part:2, sec:"Special cases", q:"When exams are scheduled for your batches, how is the process different from a normal lecture?"},
+  {id:"Q25", part:2, sec:"Special cases", q:"When a session is online, is a hall still assigned, or is it just marked as online?"},
+  {id:"Q26", part:2, sec:"Informing students", q:"How are students told about their lectures and halls before the lecture day?", hint:"If SMS is used, how does that work from your side?"},
+  {id:"Q33", part:2, sec:"Problems and needs", q:"If there was a website for entering and updating the timetable instead of Excel, would you use it? Why or why not?", hint:"What would it need for you to switch (clash warnings, free-hall search, mobile access)? Is there anything Excel does that it would also need to do? Who else would need to use or approve it?"}
+];
+const P1 = QUESTIONS.filter(x=>x.part===1), P2 = QUESTIONS.filter(x=>x.part===2);
+
+document.getElementById("brand").textContent = CONFIG.PROGRAMME + " · Final project";
+
+/* ---------- storage (safe) ---------- */
+const KEY = "coord-interview-v3";
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+
+let S = store.get(KEY);
+if(!S){
+  S = {screen:"welcome", idx:0, answers:{}, drafts:{}, sent:{}, name:"", faculty:"", sid:Math.random().toString(36).slice(2,10), submitted:false};
+}
+if(S.faculty && !CONFIG.FACULTIES.includes(S.faculty)) S.faculty=""; delete S.role;
+S.answers = S.answers||{}; S.drafts = S.drafts||{}; S.sent = S.sent||{};
+const save = ()=>store.set(KEY, S);
+const entriesOf = id => S.answers[id] || (S.answers[id] = []);
+
+/* ---------- sending to Google Sheet ---------- */
+let queue = store.get(KEY+":queue") || [];
+function send(payload){
+  if(!CONFIG.SHEET_URL) return;
+  queue.push(Object.assign({sid:S.sid, name:S.name, faculty:S.faculty, ts:new Date().toISOString()}, payload));
+  store.set(KEY+":queue", queue);
+  flush();
+}
+let flushing=false;
+async function flush(){
+  if(flushing || !CONFIG.SHEET_URL) return; flushing=true;
+  while(queue.length){
+    try{
+      await fetch(CONFIG.SHEET_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(queue[0])});
+      queue.shift(); store.set(KEY+":queue", queue);
+    }catch(e){ break; }
+  }
+  flushing=false;
+}
+flush();
+function syncAnswer(item){
+  const list = entriesOf(item.id);
+  const text = list.length>1 ? list.map((e,i)=>`(${i+1}) ${e.text}`).join("\n\n") : (list[0]?.text||"");
+  if(S.sent[item.id] === text) return;
+  const methods = [...new Set(list.map(e=>e.method))].join("+");
+  send({type:"answer", part:item.part, qid:item.id, question:item.q, answer:text, entries:list.length, method:methods});
+  S.sent[item.id] = text; save();
+}
+
+/* ---------- helpers ---------- */
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const firstName = n => (n||"").trim().split(/\s+/)[0] || "";
+const previewBanner = () => CONFIG.SHEET_URL ? "" : `<div class="banner">Preview mode: answers stay on this device and are not sent anywhere.</div>`;
+function go(screen, idx){ stopListening(); ui = freshUI(); S.screen=screen; if(idx!==undefined) S.idx=idx; if(screen!=="welcome") S.lastScreen=screen; save(); render(); window.scrollTo(0,0); }
+function render(){ ({welcome, identity, question, brk, review, done})[S.screen](); }
+
+/* ---------- screens ---------- */
+function welcome(){
+  const resume = !!S.started;
+  app.innerHTML = `
+    ${previewBanner()}
+    <h1>How are lecture halls allocated today?</h1>
+    <div class="idcard"><b>${esc(CONFIG.STUDENT_NAME)}</b>${esc(CONFIG.PROGRAMME)} · Student ID ${esc(CONFIG.STUDENT_ID)}</div>
+    <p>For my final project, I'm building a system that allocates lecture halls automatically. Sessions that run at the same time can't share a hall, and each session can only go to halls that are big enough and have the right equipment. The system finds an allocation that follows all of these rules, and shows hall usage, free halls and clashes on a dashboard.</p>
+    <p>To build it correctly, I need to understand how timetabling and hall allocation really work today. As a coordinator, you know this better than anyone.</p>
+    <h2>How this works</h2>
+    <ul class="steps">
+      <li>There are ${QUESTIONS.length} questions in two parts, about 30 minutes in total.</li>
+      <li>Type your answer, or tap Speak and talk.</li>
+      <li>You can add more than one answer to a question, and edit any answer.</li>
+      <li>Your answers save as you go. You can close the page and come back later on the same device.</li>
+      <li>Before you submit, you can review and edit all your answers.</li>
+    </ul>
+    <h2>Your privacy</h2>
+    <div class="note">Your name will not appear in my report. I will refer to you only by a label such as "Coordinator A". Your answers are used only for this project.</div>
+    <div class="btnrow">
+      ${resume ? `<button class="primary" id="resume">Continue where you left off</button><button class="ghost" id="next">Start again</button>`
+               : `<button class="primary" id="next">Next</button>`}
+    </div>`;
+  const r = document.getElementById("resume");
+  if(r) r.onclick = ()=>go(S.lastScreen && S.lastScreen!=="identity" ? S.lastScreen : "question");
+  document.getElementById("next").onclick = ()=>{
+    if(resume){
+      if(!confirm("Start again? Your saved answers on this device will be cleared.")) return;
+      S = {screen:"welcome", idx:0, answers:{}, drafts:{}, sent:{}, name:"", faculty:"", sid:Math.random().toString(36).slice(2,10), submitted:false};
+    }
+    go("identity");
+  };
+}
+
+function identity(){
+  app.innerHTML = `
+    ${previewBanner()}
+    <h1>Before we start</h1>
+    <p class="muted">Please enter your name and choose your faculty.</p>
+    <label class="field"><span>Full name</span>
+      <input type="text" id="name" autocomplete="name" placeholder="Your full name" value="${esc(S.name||"")}">
+    </label>
+    <label class="field"><span>Faculty</span>
+      <select id="faculty">
+        <option value="" disabled ${S.faculty?"":"selected"}>Choose your faculty</option>
+        ${CONFIG.FACULTIES.map(f=>`<option ${S.faculty===f?"selected":""}>${esc(f)}</option>`).join("")}
+      </select>
+    </label>
+    <label class="check"><input type="checkbox" id="c1"><span id="c1t"></span></label>
+    <label class="check"><input type="checkbox" id="c2"><span>I agree that my answers can be used for this project, as described on the previous page.</span></label>
+    <div class="err-msg" id="err"></div>
+    <div class="btnrow">
+      <button class="ghost" id="back">Back</button>
+      <span class="spacer"></span>
+      <button class="primary" id="start" disabled>${S.started ? "Save and continue" : "Start interview"}</button>
+    </div>`;
+  const $ = id => document.getElementById(id);
+  const nameEl=$("name"), fac=$("faculty"), c1=$("c1"), c2=$("c2"), start=$("start"), c1t=$("c1t");
+  const currentName = ()=> (nameEl.value||"").trim().replace(/\s+/g," ");
+  const currentFaculty = ()=> CONFIG.FACULTIES.includes(fac.value) ? fac.value : "";
+  const update = ()=>{
+    const n = currentName();
+    c1t.textContent = n ? `I confirm that I am ${n}.` : "I confirm that I am the person with this name.";
+    start.disabled = !(n.length>=3 && currentFaculty() && c1.checked && c2.checked);
+  };
+  nameEl.oninput = ()=>{ c1.checked=false; update(); };
+  fac.onchange = update;
+  c1.onchange = c2.onchange = update; update();
+  $("back").onclick = ()=>go("welcome");
+  start.onclick = ()=>{
+    const first = !S.started;
+    S.name=currentName(); S.faculty=currentFaculty(); S.started=true; save();
+    send({type: first ? "start" : "details"});
+    if(S.returnToReview){ S.returnToReview=false; return go("review"); }
+    go("question", first ? 0 : S.idx);
+  };
+}
+
+/* ui state for the question screen: mode = "new" | "edit" | "none" */
+const freshUI = ()=>({mode:null, editIdx:null, voice:false, typed:false});
+let ui = freshUI();
+
+function question(){
+  const item = QUESTIONS[S.idx];
+  const list = item.part===1 ? P1 : P2;
+  const pos = list.indexOf(item)+1;
+  const isLastOfPart = pos===list.length;
+  const entries = entriesOf(item.id);
+  if(ui.mode===null) ui.mode = (entries.length===0 || S.drafts[item.id]) ? "new" : "none";
+  const hasSpeech = !!(window.SpeechRecognition||window.webkitSpeechRecognition);
+  const label = i => entries.length>1 ? `Answer ${i+1}` : "Your answer";
+
+  const editor = (isEdit)=>`
+    <div class="editor">
+      ${entries.length || isEdit ? `<div class="editor-label">${isEdit ? "Editing " + label(ui.editIdx).toLowerCase() : "Another answer"}</div>` : ""}
+      <textarea id="ans" placeholder="Type your answer here${hasSpeech?", or tap Speak and talk":""}."></textarea>
+      <div class="tools">
+        ${hasSpeech ? `<button class="mic small" id="mic" type="button">${micIcon()}<span>Speak</span></button>` : ""}
+        <span class="spacer"></span>
+        ${isEdit ? `<button class="textbtn danger" id="remove" type="button">Remove</button>` : ""}
+        ${(isEdit || entries.length) ? `<button class="textbtn" id="cancel" type="button">Cancel</button>` : ""}
+        <button class="primary small" id="saveEntry" type="button">${isEdit ? "Save changes" : "Save answer"}</button>
+        <span class="status" id="status">${hasSpeech ? "" : "Voice input works in Chrome or Edge. You can type here."}</span>
+      </div>
+    </div>`;
+
+  let entriesHtml = entries.map((e,i)=> (ui.mode==="edit" && ui.editIdx===i) ? editor(true) : `
+    <div class="entry">
+      <div class="entry-head"><span>${label(i)}</span>${ui.mode==="none" ? `<button class="textbtn" data-edit="${i}" type="button">Edit</button>` : ""}</div>
+      <div class="entry-text">${esc(e.text)}</div>
+    </div>`).join("");
+
+  const nextLabel = S.returnToReview ? "Back to review" : isLastOfPart ? (item.part===1 ? "Continue to Part 2" : "Review answers") : "Next";
+
+  app.innerHTML = `
+    ${previewBanner()}
+    <div class="meta"><span>Part ${item.part} · ${esc(item.sec)}</span><span>Question ${pos} of ${list.length}</span></div>
+    <div class="bar"><i style="width:${(pos-1)/list.length*100}%"></i></div>
+    <p class="q">${esc(item.q)}</p>
+    ${item.hint ? `<p class="hint">You could also mention: ${esc(item.hint)}</p>` : ""}
+    ${entriesHtml}
+    ${ui.mode==="new" ? editor(false) : ""}
+    ${ui.mode==="none" ? `<button class="addbtn" id="add" type="button">+ Add another answer</button>` : ""}
+    <div class="err-msg" id="err"></div>
+    <div class="btnrow">
+      <button class="ghost" id="back">Back</button>
+      <span class="spacer"></span>
+      <button class="primary" id="next">${nextLabel}</button>
+    </div>`;
+
+  const ta = document.getElementById("ans");
+  if(ta){
+    ta.value = ui.mode==="edit" ? (S.drafts[item.id] ?? entries[ui.editIdx].text) : (S.drafts[item.id] || "");
+    ta.addEventListener("input", ()=>{ if(listening) stopListening(); ui.typed=true; S.drafts[item.id]=ta.value; save(); clearErr(); });
+    ta.addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ e.preventDefault(); saveEntry(); }});
+    if(window.matchMedia && window.matchMedia("(min-width:700px)").matches) ta.focus();
+    const mic = document.getElementById("mic");
+    if(mic) mic.onclick = ()=> listening ? stopListening() : startListening(ta, ()=>{ ui.voice=true; S.drafts[item.id]=ta.value; save(); clearErr(); });
+    document.getElementById("saveEntry").onclick = saveEntry;
+    const cancel = document.getElementById("cancel");
+    if(cancel) cancel.onclick = ()=>{ stopListening(); delete S.drafts[item.id]; ui = freshUI(); ui.mode = entriesOf(item.id).length ? "none" : "new"; save(); question(); };
+    const rm = document.getElementById("remove");
+    if(rm) rm.onclick = ()=>{
+      if(!confirm("Remove this answer?")) return;
+      stopListening(); entries.splice(ui.editIdx,1); delete S.drafts[item.id];
+      ui = freshUI(); save(); syncAnswer(item); question();
+    };
+  }
+  app.querySelectorAll("[data-edit]").forEach(b=> b.onclick = ()=>{ ui = freshUI(); ui.mode="edit"; ui.editIdx=+b.dataset.edit; question(); });
+  const add = document.getElementById("add");
+  if(add) add.onclick = ()=>{ ui = freshUI(); ui.mode="new"; question(); };
+
+  function method(prev){
+    const m = ui.voice && ui.typed ? "typed+voice" : ui.voice ? "voice" : ui.typed ? "typed" : null;
+    if(!m) return prev || "typed";
+    return (!prev || prev===m) ? m : "typed+voice";
+  }
+  // returns false if the open editor had nothing to save
+  function saveEntry(){
+    stopListening();
+    const text = (ta ? ta.value : "").trim();
+    if(!text){ showErr("Please write or speak your answer first."); return false; }
+    if(ui.mode==="edit") entries[ui.editIdx] = {text, method:method(entries[ui.editIdx].method)};
+    else entries.push({text, method:method()});
+    delete S.drafts[item.id]; ui = freshUI(); ui.mode="none"; save(); syncAnswer(item); question();
+    return true;
+  }
+  function clearErr(){ const e=document.getElementById("err"); if(e) e.textContent=""; }
+  function showErr(m){ const e=document.getElementById("err"); if(e) e.textContent=m; }
+
+  document.getElementById("next").onclick = ()=>{
+    stopListening();
+    const draft = ta ? ta.value.trim() : "";
+    if(draft){
+      if(ui.mode==="edit") entries[ui.editIdx] = {text:draft, method:method(entries[ui.editIdx].method)};
+      else entries.push({text:draft, method:method()});
+      delete S.drafts[item.id]; save();
+    }
+    if(!entriesOf(item.id).length){ showErr("Please answer this question before moving on."); return; }
+    syncAnswer(item);
+    if(S.returnToReview){ S.returnToReview=false; return go("review"); }
+    if(!isLastOfPart) return go("question", S.idx+1);
+    if(item.part===1){ send({type:"finish", part:1}); return go("brk"); }
+    go("review");
+  };
+  document.getElementById("back").onclick = ()=>{
+    stopListening(); save();
+    if(S.returnToReview){ S.returnToReview=false; return go("review"); }
+    if(S.idx===0) return go("identity");
+    if(S.idx===P1.length) return go("brk");
+    go("question", S.idx-1);
+  };
+}
+
+let rec=null, listening=false, baseText="";
+function startListening(ta, onChange){
+  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+  const status = document.getElementById("status");
+  try{ rec = new SR(); rec.lang = CONFIG.SPEECH_LANG; rec.continuous = true; rec.interimResults = true; }
+  catch(e){ status.textContent="Voice input isn't available here. Please type your answer."; status.className="status err"; return; }
+  baseText = ta.value; if(baseText && !/\s$/.test(baseText)) baseText += " ";
+  rec.onresult = e=>{
+    let interim="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t = e.results[i][0].transcript;
+      if(e.results[i].isFinal) baseText += t.trim()+" "; else interim += t;
+    }
+    ta.value = baseText + interim; onChange();
+  };
+  rec.onerror = e=>{
+    status.className="status err";
+    status.textContent = (e.error==="not-allowed"||e.error==="service-not-allowed")
+      ? "Microphone is blocked. Allow microphone access in your browser, or type your answer."
+      : (e.error==="no-speech" ? "I didn't hear anything. Tap Speak to try again." : "Voice input stopped. You can try again or type.");
+  };
+  rec.onend = ()=>{ listening=false; setMic(false); };
+  try{ rec.start(); listening=true; setMic(true); status.className="status"; status.textContent="Listening… you can edit the text before saving."; }
+  catch(e){ status.className="status err"; status.textContent="Couldn't start the microphone. Please type your answer."; }
+}
+function stopListening(){ if(rec && listening){ try{ rec.stop(); }catch(e){} } listening=false; setMic(false); }
+function setMic(on){
+  const m=document.getElementById("mic"); if(!m) return;
+  m.classList.toggle("on", on); m.querySelector("span").textContent = on ? "Stop" : "Speak";
+  if(!on){ const s=document.getElementById("status"); if(s && !s.classList.contains("err")) s.textContent=""; }
+}
+function micIcon(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`; }
+
+function brk(){
+  app.innerHTML = `
+    ${previewBanner()}
+    <div class="big-done">✓</div>
+    <h1>Part 1 is done. Thank you${firstName(S.name)?", "+esc(firstName(S.name)):""}!</h1>
+    <p>You're more than halfway there.</p>
+    <p class="muted">Part 2 has ${P2.length} shorter questions about preferences, special cases and what you would want from a new system. It takes about 10 minutes.</p>
+    <div class="btnrow">
+      <button class="ghost" id="back">Back</button>
+      <span class="spacer"></span>
+      <button class="primary" id="more">Start Part 2</button>
+    </div>`;
+  document.getElementById("back").onclick = ()=>go("question", P1.length-1);
+  document.getElementById("more").onclick = ()=>go("question", P1.length);
+}
+
+function review(){
+  let html = "", lastSec = "";
+  QUESTIONS.forEach((item, i)=>{
+    const head = `Part ${item.part} · ${item.sec}`;
+    if(head!==lastSec){ html += `<div class="rv-sec">${esc(head)}</div>`; lastSec=head; }
+    const list = entriesOf(item.id);
+    const ans = list.length ? list.map((e,j)=> list.length>1 ? `${j+1}. ${e.text}` : e.text).join("\n") : "Not answered yet";
+    html += `<div class="rv"><div class="rv-q"><span>${esc(item.q)}</span><button class="textbtn" data-go="${i}" type="button">Edit</button></div><div class="rv-a">${esc(ans)}</div></div>`;
+  });
+  const missing = QUESTIONS.filter(q=>!entriesOf(q.id).length).length;
+  app.innerHTML = `
+    ${previewBanner()}
+    <h1>Review your answers</h1>
+    <p class="muted">Check your answers below. Tap Edit to change an answer or add another one.</p>
+    <div class="rv-sec">Your details</div>
+    <div class="rv"><div class="rv-q"><span>${esc(S.name)}</span><button class="textbtn" id="editDetails" type="button">Edit</button></div><div class="rv-a">${esc(S.faculty)}</div></div>
+    ${html}
+    ${missing ? `<div class="err-msg">${missing} question${missing>1?"s are":" is"} not answered yet. Please answer ${missing>1?"them":"it"} before submitting.</div>` : ""}
+    <div class="btnrow">
+      <button class="ghost" id="back">Back</button>
+      <span class="spacer"></span>
+      <button class="primary" id="submit" ${missing?"disabled":""}>${S.submitted ? "Submit changes" : "Submit interview"}</button>
+    </div>`;
+  app.querySelectorAll("[data-go]").forEach(b=> b.onclick = ()=>{ S.returnToReview=true; go("question", +b.dataset.go); });
+  document.getElementById("editDetails").onclick = ()=>{ S.returnToReview=true; go("identity"); };
+  document.getElementById("back").onclick = ()=>go("question", QUESTIONS.length-1);
+  document.getElementById("submit").onclick = ()=>{
+    QUESTIONS.forEach(syncAnswer);
+    send({type:"finish", part:2}); S.submitted=true; save(); go("done");
+  };
+}
+
+function done(){
+  app.innerHTML = `
+    ${previewBanner()}
+    <div class="big-done">🙏</div>
+    <h1>Thank you${firstName(S.name)?", "+esc(firstName(S.name)):""}.</h1>
+    <p>Your answers have been submitted. They will help me design an allocation system that matches how things really work.</p>
+    <p class="muted">If you think of anything else later, open this link again on the same device and edit your answers.</p>
+    <div class="btnrow"><button class="ghost" id="review">Review or edit my answers</button></div>`;
+  document.getElementById("review").onclick = ()=>go("review");
+}
+
+render();
+</script>
+</body>
+</html>
