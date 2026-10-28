@@ -341,11 +341,11 @@ function question(){
   const ta = document.getElementById("ans");
   if(ta){
     ta.value = ui.mode==="edit" ? (S.drafts[item.id] ?? entries[ui.editIdx].text) : (S.drafts[item.id] || "");
-    ta.addEventListener("input", ()=>{ if(listening) stopListening(); ui.typed=true; S.drafts[item.id]=ta.value; save(); clearErr(); });
+    ta.addEventListener("input", ()=>{ if(isListening()) stopListening(); ui.typed=true; S.drafts[item.id]=ta.value; save(); clearErr(); });
     ta.addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ e.preventDefault(); saveEntry(); }});
     if(window.matchMedia && window.matchMedia("(min-width:700px)").matches) ta.focus();
     const mic = document.getElementById("mic");
-    if(mic) mic.onclick = ()=> listening ? stopListening() : startListening(ta, ()=>{ ui.voice=true; S.drafts[item.id]=ta.value; save(); clearErr(); });
+    if(mic) mic.onclick = ()=> V.want ? stopListening(true) : startListening(ta, ()=>{ ui.voice=true; S.drafts[item.id]=ta.value; save(); clearErr(); });
     document.getElementById("saveEntry").onclick = saveEntry;
     const cancel = document.getElementById("cancel");
     if(cancel) cancel.onclick = ()=>{ stopListening(); delete S.drafts[item.id]; ui = freshUI(); ui.mode = entriesOf(item.id).length ? "none" : "new"; save(); question(); };
@@ -402,36 +402,101 @@ function question(){
   };
 }
 
-let rec=null, listening=false, baseText="";
+/* ---------- voice input ----------
+   One mic "session" can use several recognizer instances: phones end after each
+   sentence, so we quietly start a new one until the person taps Stop.
+   Every instance has a generation number; events from old instances are ignored. */
+const IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+const V = {rec:null, want:false, stopping:false, ta:null, onChange:null, committed:"", gen:0, silent:0, timer:null};
+const isListening = ()=> V.want || V.stopping;
+function joinText(a, b){ a = a || ""; b = (b || "").trim(); if(!b) return a; return a && !/\s$/.test(a) ? a + " " + b : a + b; }
+function voiceStatus(msg, err){ const s=document.getElementById("status"); if(s){ s.textContent=msg||""; s.className="status"+(err?" err":""); } }
+
 function startListening(ta, onChange){
-  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
-  const status = document.getElementById("status");
-  try{ rec = new SR(); rec.lang = CONFIG.SPEECH_LANG; rec.continuous = true; rec.interimResults = true; }
-  catch(e){ status.textContent="Voice input isn't available here. Please type your answer."; status.className="status err"; return; }
-  baseText = ta.value; if(baseText && !/\s$/.test(baseText)) baseText += " ";
-  rec.onresult = e=>{
-    let interim="";
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      const t = e.results[i][0].transcript;
-      if(e.results[i].isFinal) baseText += t.trim()+" "; else interim += t;
-    }
-    ta.value = baseText + interim; onChange();
-  };
-  rec.onerror = e=>{
-    status.className="status err";
-    status.textContent = (e.error==="not-allowed"||e.error==="service-not-allowed")
-      ? "Microphone is blocked. Allow microphone access in your browser, or type your answer."
-      : (e.error==="no-speech" ? "I didn't hear anything. Tap Speak to try again." : "Voice input stopped. You can try again or type.");
-  };
-  rec.onend = ()=>{ listening=false; setMic(false); };
-  try{ rec.start(); listening=true; setMic(true); status.className="status"; status.textContent="Listening… you can edit the text before saving."; }
-  catch(e){ status.className="status err"; status.textContent="Couldn't start the microphone. Please type your answer."; }
+  if(isListening()) return;
+  V.ta = ta; V.onChange = onChange; V.committed = ta.value; V.want = true; V.silent = 0;
+  setMic("on"); voiceStatus("Listening… speak now. You can edit the text before saving.");
+  startRec(0);
 }
-function stopListening(){ if(rec && listening){ try{ rec.stop(); }catch(e){} } listening=false; setMic(false); }
-function setMic(on){
+function startRec(tries){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const gen = ++V.gen;
+  let r, heard = false;
+  try{ r = new SR(); }catch(e){ V.want=false; finish(); voiceStatus("Voice input isn't available here. Please type your answer.", true); return; }
+  r.lang = CONFIG.SPEECH_LANG; r.interimResults = true; r.maxAlternatives = 1;
+  r.continuous = !IS_MOBILE;  // continuous mode is slow and repeats words on phones
+  r.onresult = e=>{
+    if(gen !== V.gen) return;
+    let fin = "", interim = "";
+    for(let i=0;i<e.results.length;i++){
+      const t = e.results[i][0].transcript;
+      if(e.results[i].isFinal) fin = joinText(fin, t); else interim = joinText(interim, t);
+    }
+    heard = true; V.silent = 0;
+    V.ta.value = joinText(joinText(V.committed, fin), interim);
+    if(V.onChange) V.onChange();
+  };
+  r.onerror = e=>{
+    if(gen !== V.gen) return;
+    const msg = {
+      "not-allowed": "Microphone is blocked. Allow microphone access for this site, or type your answer.",
+      "service-not-allowed": "Microphone is blocked. Allow microphone access for this site, or type your answer.",
+      "audio-capture": "No microphone was found. Please type your answer.",
+      "network": "Voice input needs a working internet connection. Please try again or type your answer."
+    }[e.error];
+    if(msg){ V.want = false; V.fatal = msg; }
+    // "no-speech" and "aborted" are handled in onend
+  };
+  r.onend = ()=>{
+    if(gen !== V.gen) return;
+    V.rec = null;
+    V.committed = V.ta.value;            // keep everything that was shown
+    if(V.want){                          // still listening: start the next sentence
+      if(!heard) V.silent++;
+      if(V.silent >= 4){ V.want = false; finish(); voiceStatus("Stopped listening because I didn't hear anything. Tap Speak to try again."); return; }
+      setTimeout(()=>{ if(V.want && gen === V.gen) startRec(0); }, 120);
+      return;
+    }
+    const fatal = V.fatal; V.fatal = null;
+    if(V.onChange) V.onChange();
+    finish();
+    if(fatal) voiceStatus(fatal, true);
+  };
+  V.rec = r;
+  try{ r.start(); }
+  catch(e){
+    V.rec = null;
+    if(V.want && tries < 3) return setTimeout(()=>{ if(V.want && gen === V.gen) startRec(tries+1); }, 300);
+    V.want = false; finish(); voiceStatus("Couldn't start the microphone. Please try again or type your answer.", true);
+  }
+}
+// soft = the Stop button: let the browser finish the last words (max 1.5 s).
+// Otherwise (typing, saving, moving on): stop at once and keep the text on screen.
+function stopListening(soft){
+  if(!isListening()) return;
+  V.want = false;
+  if(soft && V.rec){
+    V.stopping = true; setMic("stopping");
+    try{ V.rec.stop(); }catch(e){}
+    clearTimeout(V.timer); V.timer = setTimeout(()=>{ if(V.stopping) hardEnd(); }, 1500);
+  } else hardEnd();
+}
+function hardEnd(){
+  const r = V.rec; V.gen++; V.rec = null;
+  if(r){ try{ r.abort(); }catch(e){} }
+  if(V.ta) V.committed = V.ta.value;
+  finish();
+}
+function finish(){
+  clearTimeout(V.timer); V.stopping = false; V.want = false; V.onChange = null;
+  setMic("off");
+}
+function setMic(state){
   const m=document.getElementById("mic"); if(!m) return;
-  m.classList.toggle("on", on); m.querySelector("span").textContent = on ? "Stop" : "Speak";
-  if(!on){ const s=document.getElementById("status"); if(s && !s.classList.contains("err")) s.textContent=""; }
+  m.classList.toggle("on", state==="on");
+  m.disabled = state==="stopping";
+  m.querySelector("span").textContent = state==="on" ? "Stop" : state==="stopping" ? "Finishing…" : "Speak";
+  if(state==="off"){ const s=document.getElementById("status"); if(s && !s.classList.contains("err")) s.textContent=""; }
 }
 function micIcon(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`; }
 
